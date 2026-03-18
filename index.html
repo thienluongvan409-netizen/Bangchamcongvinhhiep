@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bảng Chấm Công</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 10px;
+  }
+
+  h2 {
+    margin-top: 20px;
+    padding: 15px;
+    background: linear-gradient(45deg, #00f, #800080, #ff4d6d);
+    color: white;
+    border-radius: 8px;
+    display: inline-block;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  }
+
+  .marquee-container {
+    width: 100%;
+    overflow: hidden;
+    border: 2px solid #800080;
+    border-radius: 8px;
+    background: #fff;
+    margin: 20px 0;
+    height: 40px;
+    position: relative;
+  }
+
+  .marquee-text {
+    display: inline-block;
+    white-space: nowrap;
+    position: absolute;
+    right: -100%;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff4d6d;
+  }
+
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .day {
+    background: white;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 8px 15px;
+    margin: 5px;
+    width: 150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .day div:first-child {
+    background: linear-gradient(45deg, #800080, #ff4d6d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+  }
+
+  input {
+    width: 40px;
+    height: 30px;
+    text-align: center;
+    font-size: 16px;
+    border: 2px solid #999;
+    border-radius: 5px;
+  }
+
+  /* Nút màu tím đồng nhất */
+  button {
+    margin: 10px 5px 10px 5px;
+    padding: 10px 20px;
+    background-color: #800080;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  button:hover {
+    background-color: #9933cc; /* sáng hơn khi hover */
+  }
+</style>
+</head>
+<body>
+
+<h2>BẢNG CHẤM CÔNG THÁNG 3</h2>
+
+<!-- Thông báo chạy -->
+<div class="marquee-container">
+  <div class="marquee-text" id="marqueeText">🎉 Chào mừng bạn đến với Web App Chấm Công Vinh Hiệp 💕</div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<button onclick="saveData()">💾 Chấm Công</button>
+<button onclick="resetAll()">🔄 Reset Công</button>
+
+<script>
+const grid = document.getElementById("grid");
+
+// Load dữ liệu chấm công
+let data = JSON.parse(localStorage.getItem("chamcong_input")) || {};
+
+// Tạo 31 ngày, 2 ô song song
+for (let i = 1; i <= 31; i++) {
+  const div = document.createElement("div");
+  div.className = "day";
+
+  const label = document.createElement("div");
+  label.innerText = "Ngày " + i;
+
+  const input = document.createElement("input");
+  input.value = data[i] || "";
+
+  input.oninput = () => {
+    data[i] = input.value;
+  };
+
+  div.appendChild(label);
+  div.appendChild(input);
+  grid.appendChild(div);
+}
+
+// Lưu chấm công
+function saveData() {
+  localStorage.setItem("chamcong_input", JSON.stringify(data));
+  alert("Đã lưu dữ liệu chấm công!");
+}
+
+// Reset
+function resetAll() {
+  if(confirm("Bạn có chắc muốn xoá toàn bộ?")) {
+    localStorage.removeItem("chamcong_input");
+    location.reload();
+  }
+}
+
+// Hiệu ứng marquee
+const marquee = document.getElementById("marqueeText");
+let pos = window.innerWidth;
+
+function animateMarquee() {
+  pos -= 2; // tốc độ chạy
+  if(pos < -marquee.offsetWidth) pos = window.innerWidth;
+  marquee.style.left = pos + "px";
+  requestAnimationFrame(animateMarquee);
+}
+
+window.addEventListener('load', () => {
+  animateMarquee();
+});
+</script>
+
+</body>
+</html>
